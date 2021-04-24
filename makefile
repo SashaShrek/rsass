@@ -10,4 +10,4 @@ all:
 	rm -f rsass go.mod
 
 clean:
-	sudo rm -f $(PREFIX)/rsass
+	sudo rm -f $(PREFIX)/rsass $(PREFIX)/keys.pubk

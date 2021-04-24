@@ -13,9 +13,7 @@ func main(){
   key    := flag.String("key", "0", "23,73 - два числа (секретный ключ) без пробела через запятую")
 
   flag.Parse()
-  fmt.Println(*addKey)
-  fmt.Println(*crypto)
-  fmt.Println(*key)
+  fmt.Printf("%s %s %s\n", *addKey, *crypto, *key)
 
   if *addKey != "0" && *crypto == "0" && *key == "0" {
     arr := strings.Split(*addKey, ",")

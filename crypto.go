@@ -6,6 +6,7 @@ import (
   "strconv"
   "bytes"
   "encoding/base64"
+  "fmt"
 )
 
 func cryp_to(path string) error{
@@ -31,26 +32,25 @@ func cryp_to(path string) error{
     return nil
   }
 
-  size := len(data)
+  fmt.Println("Wait...")
+  size := len(data)  
   cont := make([]int, size)
-  newData := make([]int, size)
+  var c int
+  var b int
   for index := 0; index < size; index++ {
-    c := 1
-    b := int(data[index])
-    if index > 0 {
-      newData[index] = b + newData[index - 1]
-    }else{
-      newData[index] = b
-    }
+    c = 1
+    b = int(data[index])
     for ad := 0; ad < e; ad++ {
-      c = (c * newData[index]) % n
+      c = (c * b) % n
     }
-    cont[index] = c
+    cont[index] = c << 3
+    fmt.Printf("%d ", c)
   }
   err = file.CreateFile(path + ".cry", cont)
   if err != nil {
     return err
   }
+  fmt.Println("\nReady")
   return nil
 }
 
@@ -71,24 +71,19 @@ func uncrypt(path string, d int, n int) error{
     newData[i] += string(arr[i])
   }
   res := make([]byte, len(newData))
+  var c int
+  var b int
   for index := size - 1; index >= 0; index-- {
     num, err := strconv.Atoi(newData[index])
     if err != nil {
       return err
     }
-    c := 1
-    b := num
+    c = 1
+    b = num >> 3
     for ad := 0; ad < d; ad++ {
       c = (c * b) % n
     }
     res[index] = byte(c)
-  }
-  for index := size - 1; index >= 0; index-- {
-    if index != 0 {
-      res[index] = byte(int(res[index]) - int(res[index - 1]))
-    }else{
-      res[index] = res[index]
-    }
   }
   path = strings.Replace(path, ".cry", "", 1)
   err = file.CreateFileUncry(path, res)
