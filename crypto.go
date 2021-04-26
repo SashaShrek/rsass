@@ -84,7 +84,7 @@ func uncrypt(path string, d int, n int) error {
 			c = (c * b) % n
 		}
 		res[index] = byte(c)
-		fmt.Prinf("%d", c)
+		fmt.Printf("%d", c)
 	}
 	path = strings.Replace(path, ".cry", "", 1)
 	err = file.CreateFileUncry(path, res)
