@@ -27,7 +27,7 @@ func main() {
 			fmt.Println(err)
 			return
 		}
-		err = create_keys(num1, num2)
+		err = createKeys(num1, num2)
 		if err != nil {
 			fmt.Println(err)
 		}

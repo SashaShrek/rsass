@@ -9,21 +9,22 @@ import (
 	"strings"
 )
 
-func crypTo(path string) error {
+func crypTo(path string) error { // Шифрует файл
+	// Чтение указанного файла в -crypto
 	data, err := file.ReadFile(path)
 	if err != nil {
 		return err
 	}
-	result, err := file.ReadFile("keys.pubk")
+	result, err := file.ReadFile("keys.pubk") // Чтение открытого ключа
 	if err != nil {
 		return err
 	}
-	utf8, err := base64.StdEncoding.DecodeString(string(result)) //Декодируем
+	utf8, err := base64.StdEncoding.DecodeString(string(result)) //Декодируем из base64 -> utf8
 	if err != nil {
 		return err
 	}
-	arr := strings.Split(string(utf8), ",")
-	e, err := strconv.Atoi(arr[0])
+	arr := strings.Split(string(utf8), ",") // Делим байты на массив
+	e, err := strconv.Atoi(arr[0])          // ascii to int
 	if err != nil {
 		return nil
 	}
@@ -37,7 +38,7 @@ func crypTo(path string) error {
 	cont := make([]int, size)
 	var c int
 	var b int
-	for index := 0; index < size; index++ {
+	for index := 0; index < size; index++ { // Находим остаток от деления
 		c = 1
 		b = int(data[index])
 		for ad := 0; ad < e; ad++ {
@@ -46,7 +47,7 @@ func crypTo(path string) error {
 		cont[index] = c << 3
 		fmt.Printf("%d ", c)
 	}
-	err = file.CreateFile(path+".cry", cont)
+	err = file.CreateFile(path+".cry", cont) // Сохраняем получившиеся значения
 	if err != nil {
 		return err
 	}
@@ -54,7 +55,7 @@ func crypTo(path string) error {
 	return nil
 }
 
-func uncrypt(path string, d int, n int) error {
+func uncrypt(path string, d int, n int) error { // Дешифратор
 	data, err := file.ReadFile(path)
 	if err != nil {
 		return err
@@ -73,7 +74,7 @@ func uncrypt(path string, d int, n int) error {
 	res := make([]byte, len(newData))
 	var c int
 	var b int
-	for index := size - 1; index >= 0; index-- {
+	for index := size - 1; index >= 0; index-- { // Находим первоначальные значения
 		num, err := strconv.Atoi(newData[index])
 		if err != nil {
 			return err
@@ -87,7 +88,7 @@ func uncrypt(path string, d int, n int) error {
 		fmt.Printf("%d", c)
 	}
 	path = strings.Replace(path, ".cry", "", 1)
-	err = file.CreateFileUncry(path, res)
+	err = file.CreateFileUncry(path, res) // Записываем получившиеся данные
 	if err != nil {
 		return err
 	}
