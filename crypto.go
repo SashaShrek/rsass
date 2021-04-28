@@ -1,4 +1,4 @@
-package cryptoss
+package main
 
 import (
 	"bufio"
@@ -10,8 +10,8 @@ import (
 	"strings"
 )
 
-// CrypTo шифрует файл
-func CrypTo(path string, pathKeys string) error { // Шифрует файл
+// crypTo шифрует файл
+func crypTo(path string, pathKeys string) error { // Шифрует файл
 	type Percent struct {
 		percent int64
 		step    int64
@@ -90,8 +90,8 @@ func CrypTo(path string, pathKeys string) error { // Шифрует файл
 	return nil
 }
 
-// UnCrypt - это дешифратор
-func UnCrypt(path string, d int, n int) error {
+// unCrypt - это дешифратор
+func unCrypt(path string, d int, n int) error {
 	type Percent struct {
 		percent int
 		step    int
