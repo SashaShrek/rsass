@@ -48,31 +48,3 @@ func ReadFile(path string) ([]byte, error) {
 	}
 	return content, nil
 }
-
-// CreateFile Создаёт зашифрованный файл
-func CreateFile(path string, data []int) error {
-	file, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	arr := make([]string, len(data)*2)
-	var str string
-	for i := 0; i < len(data); i++ {
-		arr[i] = strconv.Itoa(data[i]) + "\n"
-		str += arr[i]
-	}
-	file.WriteString(base64.StdEncoding.EncodeToString([]byte(str)))
-	return nil
-}
-
-// CreateFileUncry Читает файл, который надо расшифровать
-func CreateFileUncry(path string, data []byte) error {
-	file, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	file.Write(data)
-	return nil
-}

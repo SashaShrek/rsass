@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"rsass/cryptoss"
 	"strconv"
 	"strings"
 )
@@ -32,7 +33,7 @@ func main() {
 			fmt.Println(err)
 		}
 	} else if *addKey == "0" && *crypto != "0" && *key == "0" {
-		err := crypTo(*crypto)
+		err := cryptoss.CrypTo(*crypto, "keys.pubk")
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -49,7 +50,7 @@ func main() {
 			fmt.Println(err)
 			return
 		}
-		err = uncrypt(*crypto, num1, num2)
+		err = cryptoss.UnCrypt(*crypto, num1, num2)
 		if err != nil {
 			fmt.Println(err)
 		}

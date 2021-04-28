@@ -6,7 +6,15 @@ import (
 	"rsass/file"
 )
 
-func createKeys(num1 int, num2 int) error { // Создание ключей и возврат ошибки, если что-то пошло не так
+// Создание ключей и возврат ошибки, если что-то пошло не так
+func createKeys(num1 int, num2 int) error {
+	type Keys struct {
+		n  int
+		fi int
+		e  int
+		d  int
+	}
+
 	if num1 == 1 || num2 == 1 { // Проверка на корректность введённых чисел
 		fmt.Println("Числа должны быть > 1!")
 		return errors.New("Bye")
@@ -22,19 +30,21 @@ func createKeys(num1 int, num2 int) error { // Создание ключей и 
 		fmt.Printf("Число %d не является простым!\n", resNum)
 		return errors.New("Bye")
 	}
-	n := num1 * num2              // Функция Леонарда Эйлера (Fi(n) = n - 1; n = num1 * num2;
-	fi := (num1 - 1) * (num2 - 1) // Fi(num1 * num2) = (num1 - 1) * (num2 - 1))
-	e := getE(fi)
-	d := getD(e, fi)
+	keys := Keys{
+		n:  num1 * num2,
+		fi: (num1 - 1) * (num2 - 1), //Функция Эйлера
+	}
+	keys.e = getE(keys.fi)
+	keys.d = getD(keys.e, keys.fi)
 
-	if n <= 255 {
+	if keys.n <= 255 {
 		fmt.Println("Выберите другие простые числа. Желательно начинать от 53")
 		return errors.New("Bye")
 	}
-	fmt.Println("Открытый ключ: ", e, n)
-	fmt.Println("Закрытый ключ: ", d, n)
+	fmt.Println("Открытый ключ: ", keys.e, keys.n)
+	fmt.Println("Закрытый ключ: ", keys.d, keys.n)
 	fmt.Println("Обязательно сохраните эти два числа (закрытый ключ)! В противном случае вы НЕ сможете расшифровать данные!")
-	err := file.CreateKeyFile(e, n) // Сохраняем открытый ключ в файле
+	err := file.CreateKeyFile(keys.e, keys.n) // Сохраняем открытый ключ в файле
 	if err != nil {
 		return err
 	}
