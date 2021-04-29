@@ -8,6 +8,7 @@ import (
 	"rsass/file"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // crypTo шифрует файл
@@ -67,7 +68,7 @@ func crypTo(path string, pathKeys string) error { // Шифрует файл
 	var mod Module
 
 	reader := bufio.NewReader(open)
-
+	startTime := time.Now()
 	for per.index = 0; per.index < per.size; per.index++ {
 		num, _ := reader.ReadByte()
 		mod.c = 1
@@ -87,22 +88,47 @@ func crypTo(path string, pathKeys string) error { // Шифрует файл
 		return err
 	}
 	fmt.Println("Готово")
+	endTime := time.Since(startTime)
+	fmt.Printf("Время: %dms\n", endTime.Milliseconds())
+	fmt.Printf("Производительность шифрования: %d байт/миллисекунду\n", per.size/endTime.Milliseconds())
 	return nil
 }
 
 // unCrypt - это дешифратор
 func unCrypt(path string, d int, n int) error {
 	type Percent struct {
-		percent int
-		step    int
-		size    int
-		index   int
+		percent int64
+		step    int64
+		size    int64
+		index   int64
 	}
 
 	type Module struct {
 		c int
 		b int
 	}
+
+	startTime := time.Now()
+	fmt.Println("Подсчёт данных...")
+	per := Percent{
+		step:  1,
+		index: 1,
+		size:  0,
+	}
+	file, _ := os.Open(path)
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		per.size++
+	}
+	file.Close()
+	fmt.Println("Готово")
+	endTime := time.Since(startTime)
+	fmt.Printf("Время: %dms\n", endTime.Milliseconds())
+
+	startTime = time.Now()
+	fmt.Println("Дешифрую данные и начинаю запись в буфер...\nЭто может занять какое-то время")
+	per.percent = per.size / 100
+	var mod Module
 
 	open, err := os.Open(path)
 	if err != nil {
@@ -115,24 +141,6 @@ func unCrypt(path string, d int, n int) error {
 		return err
 	}
 	defer save.Close()
-
-	fmt.Println("Подсчёт данных...")
-	per := Percent{
-		step:  1,
-		index: 1,
-	}
-	file, _ := os.Open(path)
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		per.size++
-	}
-	file.Close()
-	fmt.Println("Готово")
-
-	fmt.Println("Дешифрую данные и начинаю запись в буфер...\nЭто может занять какое-то время")
-	per.percent = per.size / 100
-
-	var mod Module
 	scanner = bufio.NewScanner(open)
 	writer := bufio.NewWriter(save)
 
@@ -159,5 +167,8 @@ func unCrypt(path string, d int, n int) error {
 		return err
 	}
 	fmt.Println("Готово")
+	endTime = time.Since(startTime)
+	fmt.Printf("Время: %dms\n", endTime.Milliseconds())
+	fmt.Printf("Производительность дешифрования: %d чисел/миллисекунду\n", per.size/endTime.Milliseconds())
 	return nil
 }
