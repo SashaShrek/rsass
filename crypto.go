@@ -11,20 +11,20 @@ import (
 	"time"
 )
 
+type _Percent struct {
+	percent int64
+	step    int64
+	size    int64
+	index   int64
+}
+
+type _Module struct {
+	c int
+	b int
+}
+
 // crypTo шифрует файл
 func crypTo(path string, pathKeys string) error { // Шифрует файл
-	type Percent struct {
-		percent int64
-		step    int64
-		size    int64
-		index   int64
-	}
-
-	type Module struct {
-		c int
-		b int
-	}
-
 	result, err := file.ReadFile(pathKeys) // Чтение открытого ключа
 	if err != nil {
 		return err
@@ -60,12 +60,12 @@ func crypTo(path string, pathKeys string) error { // Шифрует файл
 
 	stat, _ := open.Stat()
 
-	var per Percent
+	var per _Percent
 	per.size = stat.Size()
 	per.percent = per.size / 100
 	per.step = 1
 
-	var mod Module
+	var mod _Module
 
 	reader := bufio.NewReader(open)
 	startTime := time.Now()
@@ -96,21 +96,9 @@ func crypTo(path string, pathKeys string) error { // Шифрует файл
 
 // unCrypt - это дешифратор
 func unCrypt(path string, d int, n int) error {
-	type Percent struct {
-		percent int64
-		step    int64
-		size    int64
-		index   int64
-	}
-
-	type Module struct {
-		c int
-		b int
-	}
-
 	startTime := time.Now()
 	fmt.Println("Подсчёт данных...")
-	per := Percent{
+	per := _Percent{
 		step:  1,
 		index: 1,
 		size:  0,
@@ -128,7 +116,7 @@ func unCrypt(path string, d int, n int) error {
 	startTime = time.Now()
 	fmt.Println("Дешифрую данные и начинаю запись в буфер...\nЭто может занять какое-то время")
 	per.percent = per.size / 100
-	var mod Module
+	var mod _Module
 
 	open, err := os.Open(path)
 	if err != nil {
