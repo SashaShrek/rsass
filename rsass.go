@@ -9,13 +9,13 @@ import (
 
 func main() {
 	addKey := flag.String("ak", "0", "23,73 - два простых числа (для создания ключей) без пробела через запятую")
-	crypto := flag.String("crypto", "0", "Файл, который нужно зашифровать/расшифровать")
-	key := flag.String("key", "0", "23,73 - два числа (секретный ключ) без пробела через запятую")
+	crypto := flag.String("crypto", "0", "Файл, который нужно зашифровать")
+	uncry := flag.String("uncry", "0", "Файл, который нужно расшифровать")
 
 	flag.Parse()
-	fmt.Printf("%s %s %s\n", *addKey, *crypto, *key)
+	fmt.Printf("%s %s %s\n", *addKey, *crypto, *uncry)
 
-	if *addKey != "0" && *crypto == "0" && *key == "0" {
+	if *addKey != "0" && *crypto == "0" {
 		arr := strings.Split(*addKey, ",")
 		num1, err := strconv.Atoi(arr[0])
 		if err != nil {
@@ -31,25 +31,14 @@ func main() {
 		if err != nil {
 			fmt.Println(err)
 		}
-	} else if *addKey == "0" && *crypto != "0" && *key == "0" {
+	} else if *addKey == "0" && *crypto != "0" {
 		err := crypTo(*crypto, "keys.pubk")
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-	} else if *addKey == "0" && *crypto != "0" && *key != "0" {
-		arr := strings.Split(*key, ",")
-		num1, err := strconv.Atoi(arr[0])
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		num2, err := strconv.Atoi(arr[1])
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		err = unCrypt(*crypto, num1, num2)
+	} else if *addKey == "0" && *crypto == "0" && *uncry != "0" {
+		err := unCrypt(*uncry, "keys.privk")
 		if err != nil {
 			fmt.Println(err)
 		}

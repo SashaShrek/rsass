@@ -43,8 +43,12 @@ func createKeys(num1 int, num2 int) error {
 	}
 	fmt.Println("Открытый ключ: ", keys.e, keys.n)
 	fmt.Println("Закрытый ключ: ", keys.d, keys.n)
-	fmt.Println("Обязательно сохраните эти два числа (закрытый ключ)! В противном случае вы НЕ сможете расшифровать данные!")
-	err := file.CreateKeyFile(keys.e, keys.n) // Сохраняем открытый ключ в файле
+	fmt.Println("Обязательно сохраните файлы keys.pubk и keys.privk! В противном случае вы НЕ сможете расшифровать/зашифровать данные!")
+	err := file.CreateKeyFile(keys.e, keys.n, "keys.pubk") // Сохраняем открытый ключ в файле
+	if err != nil {
+		return err
+	}
+	err = file.CreateKeyFile(keys.d, keys.n, "keys.privk")
 	if err != nil {
 		return err
 	}

@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"encoding/base64"
 	"fmt"
 	"os"
 	"rsass/file"
@@ -25,22 +24,10 @@ type _Module struct {
 
 // crypTo шифрует файл
 func crypTo(path string, pathKeys string) error { // Шифрует файл
-	result, err := file.ReadFile(pathKeys) // Чтение открытого ключа
+	fmt.Println("Получаю открытый ключ...")
+	e, n, err := file.ReadFile(pathKeys) // Чтение открытого ключа
 	if err != nil {
 		return err
-	}
-	utf8, err := base64.StdEncoding.DecodeString(string(result)) //Декодируем из base64 -> utf8
-	if err != nil {
-		return err
-	}
-	arr := strings.Split(string(utf8), ",") // Делим байты на массив
-	e, err := strconv.Atoi(arr[0])          // ascii to int
-	if err != nil {
-		return nil
-	}
-	n, err := strconv.Atoi(arr[1])
-	if err != nil {
-		return nil
 	}
 
 	fmt.Println("Шифрую данные и начинаю запись в буфер...")
@@ -90,13 +77,20 @@ func crypTo(path string, pathKeys string) error { // Шифрует файл
 	fmt.Println("Готово")
 	endTime := time.Since(startTime)
 	fmt.Printf("Время: %dms\n", endTime.Milliseconds())
-	fmt.Printf("Производительность шифрования: %d байт/миллисекунду\n", per.size/endTime.Milliseconds())
+	if endTime.Milliseconds() > 0 {
+		fmt.Printf("Производительность шифрования: %d байт/миллисекунду\n", per.size/endTime.Milliseconds())
+	}
 	return nil
 }
 
 // unCrypt - это дешифратор
-func unCrypt(path string, d int, n int) error {
+func unCrypt(path string, pathKeys string) error {
 	startTime := time.Now()
+	fmt.Println("Получаю секретный ключ...")
+	d, n, err := file.ReadFile(pathKeys)
+	if err != nil {
+		return err
+	}
 	fmt.Println("Подсчёт данных...")
 	per := _Percent{
 		step:  1,
@@ -157,6 +151,8 @@ func unCrypt(path string, d int, n int) error {
 	fmt.Println("Готово")
 	endTime = time.Since(startTime)
 	fmt.Printf("Время: %dms\n", endTime.Milliseconds())
-	fmt.Printf("Производительность дешифрования: %d чисел/миллисекунду\n", per.size/endTime.Milliseconds())
+	if endTime.Milliseconds() > 0 {
+		fmt.Printf("Производительность шифрования: %d строк/миллисекунду\n", per.size/endTime.Milliseconds())
+	}
 	return nil
 }
