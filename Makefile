@@ -5,9 +5,10 @@ PREFIX = /usr/local/bin
 
 all:
 	go mod init rsass
-	go build
+	go mod tidy
+	GOOS=linux GOARCH=amd64 go build
 	sudo cp rsass $(PREFIX)/rsass
 	rm -f rsass go.mod
 
 clean:
-	sudo rm -f $(PREFIX)/rsass $(PREFIX)/keys.pubk rsass keys.pubk go.mod
+	sudo rm -rvf $(PREFIX)/rsass $(PREFIX)/keys.pubk ${HOME}/rsass
